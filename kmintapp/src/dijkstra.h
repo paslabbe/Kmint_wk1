@@ -13,17 +13,13 @@ public:
 	{
 	}
 
-	PriorityQueue<const kmint::map::map_node*, double> dijkstra_search(
+	double heuristic(kmint::math::vector2d& a, kmint::math::vector2d& b);
+	void dijkstra_search(
 		const kmint::map::map_node& start, const kmint::map::map_node& goal,
 		std::map<const kmint::map::map_node*, const kmint::map::map_node*>& came_from,
 		std::map<const kmint::map::map_node*, double>& cost_so_far);
 
-private:
-	//double heuristic(kmint::math::vector2d& a, kmint::math::vector2d& b);
-
-	/*PriorityQueue<kmint::map::map_node*, double> astarsearch(kmint::map::map_node* start, kmint::map::map_node* goal,
-		std::map<kmint::map::map_node*, kmint::map::map_node*>&
-		came_from,
-		std::map<kmint::map::map_node*, double>& cost_so_far);*/
+	std::vector<const kmint::map::map_node*> reconstruct_path(
+		const kmint::map::map_node* start, const kmint::map::map_node* goal,
+		std::map<const kmint::map::map_node*, const kmint::map::map_node*> came_from);
 };
-
