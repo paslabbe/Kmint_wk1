@@ -5,7 +5,7 @@ template<typename T, typename priority_t>
 struct PriorityQueue {
 	typedef std::pair<priority_t, T> PQElement;
 	std::priority_queue<PQElement, std::vector<PQElement>,
-	                    std::greater<PQElement>> elements;
+		std::greater<PQElement>> elements;
 	// using iterator = T *;
 	// using const_iterator = const T *;
 

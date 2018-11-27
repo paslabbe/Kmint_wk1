@@ -5,7 +5,6 @@
 #include "kmint/ui.hpp"            // voor window en app
 #include "hello_actor.h"
 #include "kmint/map/map.hpp"
-#include <iostream>
 #include "cow.h"
 #include "hare.h"
 #include "dijkstra.h"
@@ -94,42 +93,21 @@ int main()
 	math::vector2d center{ 512.0, 384.0 };
 	auto& my_actor = s.build_actor<hello_actor>(center);
 
+	//Create dijkstra
+	dijkstra dijkstra{ graph };
+
 	//create cow
 	auto &cow_node = find_cow_node(m.graph());
-	auto &my_cow = s.build_actor<cow>(m.graph(), cow_node);
+	auto &my_cow = s.build_actor<cow>(m.graph(), cow_node, dijkstra);
 
 	//create hare
 	auto &my_hare = s.build_actor<hare>(m.graph());
 	my_hare.set_cow(my_cow);
-
-	dijkstra dijkstra{ graph };
-	std::map<const kmint::map::map_node*, const kmint::map::map_node*> came_from;
-	std::map<const kmint::map::map_node*, double> cost_so_far;
-	
-	//dijkstra search
-	//dijkstra.dijkstra_search(my_cow.node(), my_hare.node(), came_from, cost_so_far);
-	
-	//A* search
-	dijkstra.a_star_search(my_cow.node(), my_hare.node(), came_from, cost_so_far);
-	auto path = dijkstra.reconstruct_path(std::addressof(my_cow.node()), std::addressof(my_hare.node()), came_from);
-
-	//tag shortest path
-	// graph.untag_all();
-	//
-	// for(auto node : path)
-	// {
-	// 	graph[node->node_id()].tagged(true);
-	// }
-
-	//movement (broke)
-	// if (!path.empty())
-	// {
-	// 	my_cow.act(dt, path);
-	// }
+	my_cow.set_hare_location(my_hare.node());
 
 	// main_loop stuurt alle actors aan.
 	main_loop(s, window, [&](delta_time dt, loop_controls& ctl)
-	{		
+	{
 		// gebruik dt om te kijken hoeveel tijd versterken is
 		// sinds de vorige keer dat deze lambda werd aangeroepen
 		// loop controls is een object met eigenschappen die je kunt gebruiken om de

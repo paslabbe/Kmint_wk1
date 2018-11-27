@@ -1,36 +1,39 @@
 #include "cow.h"
-#include "kmint/random.hpp"
-#include "PriorityQueue.h"
-#include "kmint/graph/graph.hpp"
 using namespace kmint;
 
 static const char *cow_image = "resources/cow.png";
-cow::cow(map::map_graph const &g, map::map_node const &initial_node)
-: play::map_bound_actor{ g, initial_node }, drawable_{ *this,
-														kmint::graphics::image{
-															cow_image, 0.1} } {}
+cow::cow(map::map_graph const &g, map::map_node const &initial_node, dijkstra& dijkstra)
+	: kmint::play::map_bound_actor{g, initial_node}, drawable_{*this, kmint::graphics::image{cow_image, 0.1}},
+	  dijkstra_{&dijkstra}
+{
+}
 
-void cow::act(delta_time dt, std::vector<const map::map_node*> path) {
+void cow::act(delta_time dt) {
 	t_passed_ += dt;
-	int next_index = 0;
-	const map::map_node& current = this->node();
-
-	while (!path.empty()) {
-		for (int i = 0; i < current.num_edges(); i++)
-		{
-			if (current[i].to().node_id() == path.at(0)->node_id())
+	if (to_seconds(t_passed_) >= 0.1) {
+		if (!path_.empty()) {
+			for(size_t i = 0; i < this->node().num_edges(); i++)
 			{
-				next_index = i;
-				break;
+				const auto neighbor = this->node()[i].to().node_id();
+				const auto path = path_.front()->node_id();
+				if(neighbor == path)
+				{
+					this->node(node()[i].to());
+					break;
+				}
 			}
-		}
-
-		if (to_seconds(t_passed_) >= 1) {
-			// pick random edge
-			//int next_index = random_int(0, node().num_edges());
-			this->node(node()[next_index].to());
+			
+			path_.pop();
 			t_passed_ = from_seconds(0);
 		}
-		path.erase(path.begin(), path.begin() + 1);
+		else
+		{
+			set_path();
+		}
 	}
+}
+
+void cow::set_path()
+{
+	path_ = dijkstra_->a_star_search(node(), *hare_location_);
 }

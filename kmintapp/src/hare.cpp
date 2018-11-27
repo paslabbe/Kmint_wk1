@@ -20,7 +20,7 @@ map::map_node const &random_hare_node(map::map_graph const &graph) {
 }
 
 hare::hare(map::map_graph const &g)
-	: play::map_bound_actor{ g, random_hare_node(g) },
+	: kmint::play::map_bound_actor{ g, random_hare_node(g) },
 	drawable_{ *this, kmint::graphics::image{hare_image, 1} } {}
 
 void hare::act(kmint::delta_time dt) {
@@ -28,6 +28,7 @@ void hare::act(kmint::delta_time dt) {
 		auto &a = colliding_actor(i);
 		if (&a == cow_) {
 			node(random_hare_node(graph()));
+			cow_->set_hare_location(node());
 		}
 	}
 }
