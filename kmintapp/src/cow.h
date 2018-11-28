@@ -4,6 +4,7 @@
 #include "kmint/primitives.hpp"
 #include <queue>
 #include "dijkstra.h"
+#include "IState.h"
 
 class hare;
 
@@ -17,9 +18,11 @@ class cow : public kmint::play::map_bound_actor {
 	std::queue<const kmint::map::map_node*> path_;
 	const kmint::map::map_node* hare_location_;
 	dijkstra* dijkstra_;
+	IState currentState;
 	void set_path();
 public:
 	cow(kmint::map::map_graph const &g, kmint::map::map_node const &initial_node, dijkstra& dijkstra);
+	cow(kmint::map::map_graph const& g, kmint::map::map_node const& initial_node, dijkstra& dijkstra, IState& state);
 	// wordt elke game tick aangeroepen
 	void act(kmint::delta_time dt) override;
 	kmint::ui::drawable const &drawable() const override { return drawable_; }

@@ -19,9 +19,9 @@ map::map_node const &random_hare_node(map::map_graph const &graph) {
 	throw "could not find node for hare";
 }
 
-hare::hare(map::map_graph const &g)
+hare::hare(map::map_graph const &g, IState state)
 	: kmint::play::map_bound_actor{ g, random_hare_node(g) },
-	drawable_{ *this, kmint::graphics::image{hare_image, 1} } {}
+	drawable_{ *this, kmint::graphics::image{hare_image, 1} }, currentState(state), view_range(5){}
 
 void hare::act(kmint::delta_time dt) {
 	for (std::size_t i = 0; i < num_colliding_actors(); ++i) {
